@@ -10,11 +10,11 @@ urlpatterns = [
     # User API
     path('user/register/', user.RegisterView.as_view()),
     path('user/login/', user.LoginView.as_view()),
-    path('user/list/', user.ListView.as_view()),
+    path('user/list/<int:content_id>', user.ListView.as_view()),
 
     # Content API
     path('content/create/', content.CreateView.as_view()),
-    path('content/retrieve/<pk>', content.RetrieveView.as_view()),
+    path('content/retrieve/<int:pk>', content.RetrieveView.as_view()),
     path('content/list/', content.ListView.as_view()),
     path('content/share/', content.ShareView.as_view()),
 ]

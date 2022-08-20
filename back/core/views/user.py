@@ -1,4 +1,5 @@
 from core.serializers.user import *
+from core.models import Content
 
 from rest_framework.views import APIView
 from rest_framework import permissions, authentication
@@ -56,5 +57,6 @@ class ListView(ListAPIView):
     serializer_class = ListSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        return User.objects.exclude(id=user.id).values('id', 'username')
+        content_id = self.kwargs['content_id']
+        excluded_ids = Content.objects.get(id=content_id).users.values_list('id', flat=True)
+        return User.objects.exclude(id__in=excluded_ids).values('id', 'username')
