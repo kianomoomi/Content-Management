@@ -54,7 +54,6 @@ export default {
     left: 50%;
     top: 50%;
     background-color: #080710 !important;
-
 }
 .background .shape{
     height: 200px;
@@ -64,8 +63,9 @@ export default {
 }
 .shape:first-child{
     background: linear-gradient(
+        to right,
         #1845ad,
-        #23a2f6
+        #b8dffc
     );
     left: -80px;
     top: -80px;
@@ -73,8 +73,8 @@ export default {
 .shape:last-child{
     background: linear-gradient(
         to right,
-        #ff512f,
-        #f09819
+        #961540,
+        #fcb8c9
     );
     right: -80px;
     bottom: -80px;
@@ -141,24 +141,6 @@ button{
 .social{
   margin-top: 30px;
   display: flex;
-}
-.social div{
-  background: red;
-  width: 150px;
-  border-radius: 3px;
-  padding: 5px 10px 10px 5px;
-  background-color: rgba(255,255,255,0.27);
-  color: #eaf0fb;
-  text-align: center;
-}
-.social div:hover{
-  background-color: rgba(255,255,255,0.47);
-}
-.social .fb{
-  margin-left: 25px;
-}
-.social i{
-  margin-right: 4px;
 }
 .register-link-container {
   margin-top: 40px;
