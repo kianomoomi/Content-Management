@@ -1,10 +1,11 @@
-from core.serializers.user import RegisterSerializer, LoginSerializer
+from core.serializers.user import *
 
 from rest_framework.views import APIView
 from rest_framework import permissions, authentication
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.generics import ListAPIView
 
 from django.contrib.auth import authenticate
 
@@ -48,3 +49,12 @@ class LoginView(APIView):
                 data='Username or password is not correct.',
                 status=status.HTTP_401_UNAUTHORIZED
             )
+
+
+class ListView(ListAPIView):
+
+    serializer_class = ListSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return User.objects.exclude(id=user.id).values('id', 'username')
