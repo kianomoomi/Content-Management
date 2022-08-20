@@ -59,7 +59,6 @@
     </b-row>
     <div class="mt-4 add-field-button">
         <b-button variant="dark" @click="addNewField()" class="add-attribute-btn">
-            <!-- <font-awesome-icon icon="fa-solid fa-plus"/> -->
             add attribute
         </b-button>
         <b-button variant="dark" @click="submitDocContent()">
