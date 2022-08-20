@@ -16,4 +16,5 @@ urlpatterns = [
     path('content/create/', content.CreateView.as_view()),
     path('content/retrieve/<pk>', content.RetrieveView.as_view()),
     path('content/list/', content.ListView.as_view()),
+    path('content/share/', content.ShareView.as_view()),
 ]

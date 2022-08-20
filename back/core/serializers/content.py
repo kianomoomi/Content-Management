@@ -37,3 +37,9 @@ class ListSerializer(serializers.ModelSerializer):
         model = Content
         fields = ('id', 'title', 'file_format')
 
+
+class ShareSerializer(serializers.Serializer):
+
+    user_id = serializers.IntegerField()
+    content_id = serializers.IntegerField()
+
