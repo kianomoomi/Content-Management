@@ -28,7 +28,7 @@ class RetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Content
-        fields = ('id', 'title', 'file_format', 'file', 'extra')
+        fields = ('id', 'title', 'file_format', 'file', 'attach_file', 'extra')
 
 
 class ListSerializer(serializers.ModelSerializer):

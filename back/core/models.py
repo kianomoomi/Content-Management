@@ -6,6 +6,10 @@ def content_directory_path(instance, filename):
     return f'{instance.title}_{instance.file_format}_{filename}'
 
 
+def attach_directory_path(instance, filename):
+    return f'attach_{instance.title}_{instance.file_format}_{filename}'
+
+
 class Content(models.Model):
     users = models.ManyToManyField(User)
     title = models.CharField(max_length=20)
@@ -18,6 +22,7 @@ class Content(models.Model):
         ]
     )
     file = models.FileField(upload_to=content_directory_path)
+    attach_file = models.FileField(upload_to=attach_directory_path, null=True)
     extra = models.JSONField()
 
     class Meta:
