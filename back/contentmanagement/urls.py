@@ -13,5 +13,6 @@ urlpatterns = [
 
     # Content API
     path('content/create/', CreateView.as_view()),
-    path('content/retrieve/', RetrieveView.as_view()),
+    path('content/retrieve/<pk>', RetrieveView.as_view()),
+    path('content/list/', ListView.as_view()),
 ]

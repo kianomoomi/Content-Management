@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from core.models import Content
+
+from rest_framework import serializers
 
 
 class CreateSerializer(serializers.ModelSerializer):
@@ -23,15 +24,16 @@ class CreateSerializer(serializers.ModelSerializer):
         return content
 
 
-class RetrieveRequestSerializer(serializers.Serializer):
-
-    title = serializers.CharField(required=True)
-    file_format = serializers.ChoiceField(choices=(('V', 'Video'), ('A', 'Audio'), ('D', 'Document')))
-
-
-class RetrieveResponseSerializer(serializers.ModelSerializer):
+class RetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Content
-        fields = ('title', 'file_format', 'file', 'extra')
+        fields = ('id', 'title', 'file_format', 'file', 'extra')
+
+
+class ListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Content
+        fields = ('id', 'title', 'file_format')
 

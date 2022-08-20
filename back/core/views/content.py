@@ -1,12 +1,11 @@
-from core.serializers.content import CreateSerializer, RetrieveRequestSerializer, RetrieveResponseSerializer
+from core.serializers.content import CreateSerializer, RetrieveSerializer, ListSerializer
 from core.models import Content
 
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from django.core import serializers
 
 
 class CreateView(CreateAPIView):
@@ -15,20 +14,20 @@ class CreateView(CreateAPIView):
     serializer_class = CreateSerializer
 
 
-class RetrieveView(APIView):
+class RetrieveView(RetrieveAPIView):
 
-    def get(self, request):
-        serializer = RetrieveRequestSerializer(data=request.query_params)
-        serializer.is_valid(raise_exception=True)
+    serializer_class = RetrieveSerializer
 
-        user = request.user
-        title, file_format = serializer.validated_data['title'], serializer.validated_data['file_format']
-        content = get_object_or_404(user.content_set.all(), title=title, file_format=file_format)
-        serializer = RetrieveResponseSerializer(content)
+    def get_queryset(self):
+        user = self.request.user
+        return user.content_set.all()
 
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK
-        )
 
+class ListView(ListAPIView):
+
+    serializer_class = ListSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.content_set.all().values('id', 'title', 'file_format')
 
