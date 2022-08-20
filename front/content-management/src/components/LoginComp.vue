@@ -8,19 +8,53 @@
         <h3>Login</h3>
 
         <label for="username">Username</label>
-        <input type="text" placeholder="Email or Phone" id="username">
+        <input type="text" placeholder="Email or Phone" id="username" v-model="username">
 
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password">
+        <input type="password" placeholder="Password" id="password" v-model="password">
         <p class="register-link-container"><span>Don't have an account? </span><span><router-link to="/register">Register</router-link></span></p>
-        <button>Register</button>
+        <button v-if="!loading" @click="login()" :disabled="loading">
+            Log In
+        </button>
+        <button v-if="loading">
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>   
+        </button>
     </form>
 </div>
 
 </template>
 
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
+
 export default {
+    data(){
+        return {
+            username: '',
+            password: '',
+            loading: false,
+        }
+    },
+    methods: {
+        login(){
+            this.loading = true;
+            let api = "http://127.0.0.1:8000/user/login/?username=nona&password=nonanona" 
+            + this.username 
+            + "&password=" 
+            + this.password
+            Vue.axios.get(api)
+            .then(response => {
+                localStorage.removeItem('token');
+                localStorage.setItem('token', response.data.token)
+                this.$store.commit("setToken", response.data.token);
+                this.loading = false;
+                this.$router.replace("/contents");
+            }) 
+        }
+    }
 }
 </script>
 
@@ -137,5 +171,60 @@ button{
 }
 a:hover{
   color: white;
+}
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 20px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 10px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #080710;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
 }
 </style>
