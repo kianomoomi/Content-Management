@@ -52,14 +52,14 @@
           <ul class="sub-menu">
             <li><a class="link-name" href="#">Audio</a></li>
             <li v-for="content in audioContents" :key="content.id" >
-              <a>{{content.title}}</a>
+              <a @click="openSelectedAudioContent(content.id)">{{content.title}}</a>
             </li>
             <li>
               <a>
               <span>
                   <font-awesome-icon icon="fa-solid fa-plus" class="sidebar-icon-add"/>
               </span>
-              <span class="add-text">
+              <span class="add-text" @click="newAudio()">
                 add new content
               </span>
               </a>
@@ -82,14 +82,14 @@
           <ul class="sub-menu">
             <li><a class="link-name" href="#">Video</a></li>
             <li v-for="content in videoContents" :key="content.id" >
-              <a>{{content.title}}</a>
+              <a @click="openSelectedVideoContent(content.id)">{{content.title}}</a>
             </li>
             <li>
               <a>
               <span>
                   <font-awesome-icon icon="fa-solid fa-plus" class="sidebar-icon-add"/>
               </span>
-              <span class="add-text">
+              <span class="add-text" @click="newVideo()">
                 add new content
               </span>
               </a>
@@ -110,8 +110,34 @@
         :loading="docLoading"
         :extra="docExtra"
         :file="docFile"
-        :attach="docAttach"
+        :attach="docAttachFile"
         :id="docId"
+        />
+        <new-audio-content
+        v-if="showNewAudioPage" 
+        @docAdded="refreshMenu()"
+        />
+        <audio-content
+        v-if="showAudioContent"
+        :title="audioTitle"
+        :loading="audioLoading"
+        :extra="audioExtra"
+        :file="audioFile"
+        :attach="audioAttach"
+        :id="audioId"
+        />
+        <new-video-content
+        v-if="showNewVideoPage" 
+        @docAdded="refreshMenu()"
+        />
+        <video-content
+        v-if="showVideoContent"
+        :title="videoTitle"
+        :loading="videoLoading"
+        :extra="videoExtra"
+        :file="videoFile"
+        :attach="videoAttach"
+        :id="videoId"
         />
       </div>
     </section>
@@ -126,11 +152,19 @@ Vue.use(VueAxios, axios);
 
 import NewDocContent from './NewDocContent.vue'
 import DocContet from './DocContent.vue'
+import NewAudioContent from './NewAudioContent.vue';
+import AudioContent from './AudioContent.vue';
+import NewVideoContent from './NewVideoContent.vue';
+import VideoContent from './VideoContent.vue';
 
 export default {
   components: {
     NewDocContent,
     DocContet,
+    NewAudioContent,
+    AudioContent,
+    NewVideoContent,
+    VideoContent,
   },
   created() {
     this.getAllContents();
@@ -146,7 +180,10 @@ export default {
 
       showNewDocPage: false,
       showDocContent: false,
-      
+      showNewAudioPage: false,
+      showAudioContent: false,
+      showNewVideoPage: false,
+      showVideoContent: false,
 
       docLoading: false,
       docTitle: '',
@@ -154,6 +191,20 @@ export default {
       docFile: '',
       docAttachFile : '',
       docId: '',
+
+      audioLoading: false,
+      audioTitle: '',
+      audioExtra: {},
+      audioFile: '',
+      audioAttachFile : '',
+      audioId: '',
+
+      videoLoading: false,
+      videoTitle: '',
+      videoExtra: {},
+      videoFile: '',
+      videoAttachFile : '',
+      videoId: '',
     }
   },
   computed: {
@@ -180,9 +231,28 @@ export default {
     newDoc(){
       this.showNewDocPage = true;
       this.showDocContent = false;
+      this.showNewAudioPage = false;
+      this.showAudioContent = false;
+      this.showNewVideoPage = false;
+      this.showVideoContent = false;
+    },
+    newAudio(){
+      this.showNewAudioPage = true;
+      this.showNewDocPage = false;
+      this.showDocContent = false;
+      this.showAudioContent = false;
+      this.showNewVideoPage = false;
+      this.showVideoContent = false;
+    },
+    newVideo() {
+      this.showNewVideoPage = true;
+      this.showNewAudioPage = false;
+      this.showNewDocPage = false;
+      this.showDocContent = false;
+      this.showAudioContent = false;
+      this.showVideoContent = false;
     },
     refreshMenu(){
-      console.log('hiii')
       this.getAllContents();
     },
     logout(){
@@ -205,6 +275,11 @@ export default {
     openSelectedDocContent(id) {
       this.showDocContent = true;
       this.showNewDocPage = false;
+      this.showNewAudioPage = false;
+      this.showAudioContent = false;
+      this.showVideoContent = false;
+      this.showNewVideoPage = false;
+
       this.docLoading = true;
       let api = "http://127.0.0.1:8000/content/retrieve/"+id;
       Vue.axios.get(api, {
@@ -219,6 +294,54 @@ export default {
         this.docExtra = response.data.extra;
         this.docId = response.data.id;
         this.docLoading = false;
+      }) 
+    },
+    openSelectedAudioContent(id) {
+      this.showAudioContent = true;
+      this.showNewAudioPage = false;
+      this.showDocContent = false;
+      this.showNewDocPage = false;
+      this.showVideoContent = false;
+      this.showNewVideoPage = false;
+
+      this.docLoading = true;
+      let api = "http://127.0.0.1:8000/content/retrieve/"+id;
+      Vue.axios.get(api, {
+        headers: {
+          'Authorization': "Token " + localStorage.getItem('token')
+        }
+      })
+      .then(response => {
+        this.audioTitle = response.data.title;
+        this.audioFile = response.data.file;
+        this.audioAttachFile = response.data.attach_file;
+        this.audioExtra = response.data.extra;
+        this.audioId = response.data.id;
+        this.audioLoading = false;
+      }) 
+    },
+    openSelectedVideoContent(id) {
+      this.showVideoContent = true;
+      this.showAudioContent = false;
+      this.showNewAudioPage = false;
+      this.showDocContent = false;
+      this.showNewDocPage = false;
+      this.showNewVideoPage = false;
+
+      this.docLoading = true;
+      let api = "http://127.0.0.1:8000/content/retrieve/"+id;
+      Vue.axios.get(api, {
+        headers: {
+          'Authorization': "Token " + localStorage.getItem('token')
+        }
+      })
+      .then(response => {
+        this.videoTitle = response.data.title;
+        this.videoFile = response.data.file;
+        this.videoAttachFile = response.data.attach_file;
+        this.videoExtra = response.data.extra;
+        this.videoId = response.data.id;
+        this.videoLoading = false;
       }) 
     },
     }
