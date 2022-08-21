@@ -3,8 +3,8 @@
     <div class="sidebar">
       <div class="logo-details">
         <span class="logo-name">Content Management</span>
-        <span class="logo-icon">
-          <font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" class="sidebar-icon-doc"/>
+        <span class="logo-icon" @click="logout()">
+          <font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" class="sidebar-icon"/>
         </span>
       </div>
       <ul class="nav-links">
@@ -100,8 +100,19 @@
     </div>
     <section class="home-section">
       <div class="home-content">
-        <new-doc-content v-if="showNewDocPage" />
-        <doc-contet :title="title" />
+        <new-doc-content 
+        v-if="showNewDocPage" 
+        @docAdded="refreshMenu()"
+        />
+        <doc-contet 
+        v-if="showDocContent" 
+        :title="docTitle" 
+        :loading="docLoading"
+        :extra="docExtra"
+        :file="docFile"
+        :attach="docAttach"
+        :id="docId"
+        />
       </div>
     </section>
   </div>
@@ -129,12 +140,20 @@ export default {
       showDocMenu: false,
       showAudioMenu: false,
       showVideoMenu:false,
+
       contents : [],
-      showNewDocPage: false,
       loading:false,
 
-      title: '',
-      extra: {}
+      showNewDocPage: false,
+      showDocContent: false,
+      
+
+      docLoading: false,
+      docTitle: '',
+      docExtra: {},
+      docFile: '',
+      docAttachFile : '',
+      docId: '',
     }
   },
   computed: {
@@ -160,11 +179,19 @@ export default {
     },
     newDoc(){
       this.showNewDocPage = true;
+      this.showDocContent = false;
+    },
+    refreshMenu(){
+      console.log('hiii')
+      this.getAllContents();
+    },
+    logout(){
+      localStorage.removeItem('token');
+      this.$router.push('/login');
     },
     getAllContents(){
       this.loading = true;
       let api = "http://127.0.0.1:8000/content/list/";
-      console.log(localStorage.getItem('token'));
       Vue.axios.get(api, {
         headers: {
           'Authorization': "Token " + localStorage.getItem('token')
@@ -172,13 +199,13 @@ export default {
       })
       .then(response => {
           this.contents = response.data;
-          console.log(response.data);
           this.loading = false;
       }) 
     },
     openSelectedDocContent(id) {
-      console.log(id);
-      this.loading = true;
+      this.showDocContent = true;
+      this.showNewDocPage = false;
+      this.docLoading = true;
       let api = "http://127.0.0.1:8000/content/retrieve/"+id;
       Vue.axios.get(api, {
         headers: {
@@ -186,26 +213,14 @@ export default {
         }
       })
       .then(response => {
-        console.log(response.data);
-          
+        this.docTitle = response.data.title;
+        this.docFile = response.data.file;
+        this.docAttachFile = response.data.attach_file;
+        this.docExtra = response.data.extra;
+        this.docId = response.data.id;
+        this.docLoading = false;
       }) 
     },
-    onClick() {
-    axios({
-          url: 'http://127.0.0.1:8000/media/title_1_D_Untitled_Document.pdf',
-          method: 'GET',
-          responseType: 'blob',
-      }).then((response) => {
-            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-            var fileLink = document.createElement('a');
-
-            fileLink.href = fileURL;
-            fileLink.setAttribute('download', 'file.pdf');
-            document.body.appendChild(fileLink);
-
-            fileLink.click();
-      });
-    }
     }
 }
 </script>
@@ -368,7 +383,7 @@ export default {
   height: 100vh;
   left: 350px;
   top: 0px;
-  width: calc(100% - 250px);
+  width: calc(100% - 350px);
   transition: all 0.5s ease;
   overflow-y: scroll;
 }
@@ -442,5 +457,12 @@ a:hover {
 .logo-icon {
   margin-left: 40px;
   font-size: 20px;
+}
+.sidebar-icon {
+  color: white;
+  margin-left: 14px;
+}
+.sidebar-icon:hover {
+  cursor: pointer;
 }
 </style>
