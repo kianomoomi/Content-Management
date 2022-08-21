@@ -19,6 +19,8 @@ import { faVideo } from '@fortawesome/free-solid-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faMinus } from '@fortawesome/free-solid-svg-icons'
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons'
+
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);
@@ -34,6 +36,7 @@ library.add(faVideo);
 library.add(faPlus);
 library.add(faMinus);
 library.add(faArrowRightFromBracket);
+library.add(faArrowUpFromBracket);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
