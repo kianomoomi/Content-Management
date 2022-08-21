@@ -142,9 +142,11 @@ export default {
                 this.attachment = '';
                 this.$refs.inputAttach.value=null;
                 this.title = '';
+                this.newFields = 1;
                 this.diffrentFields= {
                     1: {"field": '', "value": ''},
                 }
+                console.log(this.title);
                 this.$emit("docAdded");
                 this.loading = false;
 
@@ -159,6 +161,7 @@ export default {
                 this.attachment = '';
                 this.$refs.inputAttach.value=null;
                 this.title = '';
+                this.newFields = 1;
                 this.diffrentFields= {
                     1: {"field": '', "value": ''},
                 }
