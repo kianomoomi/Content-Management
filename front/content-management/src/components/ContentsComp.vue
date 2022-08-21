@@ -23,7 +23,7 @@
           <ul class="sub-menu">
             <li><a class="link-name" href="#">Document</a></li>
             <li v-for="content in docContents" :key="content.id" >
-              <a>{{content.title}}</a>
+              <a @click="openSelectedDocContent(content.id)">{{content.title}}</a>
             </li>
             <li>
               <a>
@@ -101,13 +101,18 @@
     <section class="home-section">
       <div class="home-content">
         <new-doc-content v-if="showNewDocPage" />
-        <doc-contet />
+        <doc-contet :title="title" />
       </div>
     </section>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
+
 import NewDocContent from './NewDocContent.vue'
 import DocContet from './DocContent.vue'
 
@@ -116,85 +121,31 @@ export default {
     NewDocContent,
     DocContet,
   },
+  created() {
+    this.getAllContents();
+  },
   data(){
     return {
       showDocMenu: false,
       showAudioMenu: false,
       showVideoMenu:false,
-      contents : [
-        {
-          "id": 1,
-          "title" : "doc1",
-          "category": "doc"
-        },
-        {
-          "id": 2,
-          "title" : "video1",
-          "category": "video"
-        },
-        {
-          "id": 3,
-          "title" : "audio1",
-          "category": "audio"
-        },
-        {
-          "id": 4,
-          "title" : "audio2",
-          "category": "audio"
-        },
-        {
-          "id": 5,
-          "title" : "video2",
-          "category": "video"
-        },
-                {
-          "id": 6,
-          "title" : "video3",
-          "category": "video"
-        },
-                {
-          "id": 7,
-          "title" : "video4",
-          "category": "video"
-        },
-                {
-          "id": 8,
-          "title" : "video5",
-          "category": "video"
-        },
-                {
-          "id": 9,
-          "title" : "video6",
-          "category": "video"
-        },
-                {
-          "id": 10,
-          "title" : "audio3",
-          "category": "audio"
-        },
-        {
-          "id": 11,
-          "title" : "doc2",
-          "category": "doc"
-        },
-        {
-          "id": 12,
-          "title" : "doc3",
-          "category": "doc"
-        }
-      ],
+      contents : [],
       showNewDocPage: false,
+      loading:false,
+
+      title: '',
+      extra: {}
     }
   },
   computed: {
     docContents() {
-      return this.contents.filter(item => item.category === 'doc')
+      return this.contents.filter(item => item.file_format === 'D')
     },
     audioContents() {
-      return this.contents.filter(item => item.category === 'audio')
+      return this.contents.filter(item => item.file_format === 'A')
     },
     videoContents() {
-      return this.contents.filter(item => item.category === 'video')
+      return this.contents.filter(item => item.file_format === 'V')
     },
   },
   methods: {
@@ -209,9 +160,53 @@ export default {
     },
     newDoc(){
       this.showNewDocPage = true;
-    }
-  }
+    },
+    getAllContents(){
+      this.loading = true;
+      let api = "http://127.0.0.1:8000/content/list/";
+      console.log(localStorage.getItem('token'));
+      Vue.axios.get(api, {
+        headers: {
+          'Authorization': "Token " + localStorage.getItem('token')
+        }
+      })
+      .then(response => {
+          this.contents = response.data;
+          console.log(response.data);
+          this.loading = false;
+      }) 
+    },
+    openSelectedDocContent(id) {
+      console.log(id);
+      this.loading = true;
+      let api = "http://127.0.0.1:8000/content/retrieve/"+id;
+      Vue.axios.get(api, {
+        headers: {
+          'Authorization': "Token " + localStorage.getItem('token')
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+          
+      }) 
+    },
+    onClick() {
+    axios({
+          url: 'http://127.0.0.1:8000/media/title_1_D_Untitled_Document.pdf',
+          method: 'GET',
+          responseType: 'blob',
+      }).then((response) => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement('a');
 
+            fileLink.href = fileURL;
+            fileLink.setAttribute('download', 'file.pdf');
+            document.body.appendChild(fileLink);
+
+            fileLink.click();
+      });
+    }
+    }
 }
 </script>
 
