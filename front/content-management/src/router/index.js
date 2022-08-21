@@ -3,10 +3,17 @@ import VueRouter from 'vue-router'
 import LoginPage from '../views/LoginPage.vue'
 import RegisterPage from '../views/RegisterPage.vue'
 import ContentsPage from '../views/ContentsPage.vue'
+import MainPage from '../views/MainPage.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/',
+    name: 'Main',
+    component: MainPage
+  },
   {
     path: '/login',
     name: 'Login',
