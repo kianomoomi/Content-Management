@@ -115,8 +115,9 @@ export default {
       .then(response => {
           this.options = []
           this.selected = ''
+          this.$router.replace("/contents");
           console.log(response.data)
-      }) 
+      })
         
       }
     }
