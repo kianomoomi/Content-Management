@@ -12,7 +12,8 @@
 
         <label for="password">Password</label>
         <input type="password" placeholder="Password" id="password" v-model="password">
-        <p class="register-link-container"><span>Don't have an account? </span><span><router-link to="/register">Register</router-link></span></p>
+        <p v-if="errorMessage != ''" class="error-message">{{errorMessage}}</p>
+        <p :class="[errorMessage ? 'register-link-container-error':'register-link-container']"><span>Don't have an account? </span><span><router-link to="/register">Register</router-link></span></p>
         <button v-if="!loading" @click="login()" :disabled="loading">
             Log In
         </button>
@@ -36,6 +37,7 @@ export default {
             username: '',
             password: '',
             loading: false,
+            errorMessage : '',
         }
     },
     methods: {
@@ -52,7 +54,11 @@ export default {
                 this.$store.commit("setToken", response.data.token);
                 this.loading = false;
                 this.$router.replace("/contents");
-            }) 
+            }).catch((e) => {
+                this.errorMessage = e.response.data
+                this.loading = false;
+                console.log(this.errorMessage)
+            })
         }
     }
 }
@@ -121,6 +127,12 @@ form{
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
     padding: 50px 35px;
 }
+.error-message{
+  color: #fff;
+  margin-top: 15px;
+  margin-bottom: -20x;
+  color: #961540;
+}
 form *{
     font-family: 'Poppins',sans-serif;
     color: #ffffff;
@@ -156,7 +168,7 @@ input{
     color: #e5e5e5;
 }
 button{
-    margin-top: 30px;
+    margin-top: 20px;
     width: 100%;
     background-color: #ffffff;
     color: #080710;
@@ -165,6 +177,9 @@ button{
     font-weight: 600;
     border-radius: 5px;
     cursor: pointer;
+}
+.register-link-container-error{
+    margin-top: 10px;
 }
 .register-link-container {
   margin-top: 40px;
