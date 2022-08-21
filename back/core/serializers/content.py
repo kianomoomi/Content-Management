@@ -7,14 +7,16 @@ class CreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Content
-        fields = ('title', 'file_format', 'file')
+        fields = ('title', 'file_format', 'file', 'attach_file')
 
     def create(self, validated_data):
         title, file_format, file = validated_data['title'], validated_data['file_format'], validated_data['file']
+        attach_file = validated_data.get('attach_file')
         content = Content.objects.create(
             title=title,
             file_format=file_format,
             file=file,
+            attach_file=attach_file,
             extra={k: self.initial_data[k] for k in set(self.initial_data) - set(validated_data)}
         )
         user = self.context['request'].user
