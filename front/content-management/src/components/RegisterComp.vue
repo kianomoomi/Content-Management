@@ -12,7 +12,8 @@
 
         <label for="password">Password</label>
         <input v-model="password" type="password" placeholder="Password" id="password">
-        <p class="register-link-container"><span>Have an account? </span><span><router-link to="/login">Login</router-link></span></p>
+        <p v-if="errorMessage != ''" class="error-message">{{errorMessage}}</p>
+        <p :class="[errorMessage ? 'register-link-container-error':'register-link-container']"><span>Have an account? </span><span><router-link to="/login">Login</router-link></span></p>
         <button v-if="!loading" @click="register()" :disabled="loading">
             Register
         </button>
@@ -37,6 +38,7 @@ export default {
           username: '',
           password: '',
           loading: false,
+          errorMessage: '',
       }
   },
   methods: {
@@ -52,7 +54,16 @@ export default {
                 this.$store.commit("setToken", response.data.token);
                 console.log(this.$store.state.token)
                 this.loading = false;
-            }) 
+                this.$router.replace("/contents");
+            }).catch((e) => {
+                let obj = e.response.data
+                this.errorMessage = obj[Object.keys(obj)[0]][0];
+                // if (this.errorMessage =="A user with that username already exists.") {
+                //   this.errorMessage = "Username already exists."
+                // }
+                this.loading = false;
+                console.log(this.errorMessage)
+            })
         }
   }
 }
@@ -65,6 +76,12 @@ export default {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+}
+.error-message{
+  color: #fff;
+  margin-top: 15px;
+  margin-bottom: -20x;
+  color: #961540;
 }
 .login-container{
   background:#080710;
@@ -156,7 +173,7 @@ input{
     color: #e5e5e5;
 }
 button{
-    margin-top: 30px;
+    margin-top: 20px;
     width: 100%;
     background-color: #ffffff;
     color: #080710;
@@ -169,6 +186,9 @@ button{
 .social{
   margin-top: 30px;
   display: flex;
+}
+.register-link-container-error{
+    margin-top: 10px;
 }
 .register-link-container {
   margin-top: 40px;
