@@ -48,9 +48,6 @@
     <b-button class="content-btn" variant="dark">
         <a target=”_blank” :href="file" download>file</a>
     </b-button>
-    <b-button class="att-content-btn" variant="dark">
-        <a target=”_blank” :href="attach" download> attachment </a>
-    </b-button>
     </div>
 
   </div>
@@ -241,7 +238,7 @@ table th {
 .content-btn {
   top:550px;
   width:104px;
-  left: 820px;
+  left: 870px;
   position: fixed;
   background: #080710 !important;
 }

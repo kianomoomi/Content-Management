@@ -24,21 +24,6 @@
             />
         </b-col>
     </b-row>
-        <b-row class="doc-file-input mt-3">
-        <b-col>
-        <div class="label-container">
-            <label for="attachment">Upload your attachment</label>
-        </div>
-            <input 
-            class="form-control" 
-            type="file" 
-            id="attachment" 
-            ref="inputAttach"
-            accept=".pdf,.doc,.docx,.xml,.xlsx,.txt"
-            @change="handleAttachUpload( $event )"
-            />
-        </b-col>
-    </b-row>
     <b-row v-for="i in newFields" :key="i" class="mt-3 new-content-info">
     <b-col sm="1" /><b-col sm="1" />
     <b-col sm="3" class="field-title">
@@ -94,7 +79,6 @@ export default {
             newFields: 1,
             title: '',
             file: '',
-            attachment: ''
         }
     },
     watch: {
@@ -111,9 +95,6 @@ export default {
       handleFileUpload(event){
         this.file = event.target.files[0];
       },
-      handleAttachUpload(event) {
-        this.attachment = event.target.files[0];
-      },
       addNewField(){
           this.newFields = this.newFields + 1;
           this.diffrentFields[this.newFields] = {"field" : '', "value": ''};
@@ -122,7 +103,6 @@ export default {
           let formData = new FormData();
           let api = "http://127.0.0.1:8000/content/create/"
           formData.append('file', this.file);
-          formData.append('attach_file', this.attachment);
           formData.append('title', this.title);
           formData.append('file_format', "D");
           for (let [key, value] of Object.entries(this.diffrentFields)) {
@@ -139,8 +119,6 @@ export default {
                 console.log(response.data)
                 this.file = '';
                 this.$refs.inputFile.value=null;
-                this.attachment = '';
-                this.$refs.inputAttach.value=null;
                 this.title = '';
                 this.newFields = 1;
                 this.diffrentFields= {
@@ -158,8 +136,6 @@ export default {
                 console.error(obj[Object.keys(obj)[0]][0]);
                 this.file = '';
                 this.$refs.inputFile.value=null;
-                this.attachment = '';
-                this.$refs.inputAttach.value=null;
                 this.title = '';
                 this.newFields = 1;
                 this.diffrentFields= {

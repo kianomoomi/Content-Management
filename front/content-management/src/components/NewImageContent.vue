@@ -55,7 +55,7 @@
             submit
         </b-button>
     </div>
-    <div id="snackbar" :class="[showSuccessToast ? 'show': '']">New Image content added!</div>
+    <div id="snackbar" :class="[showSuccessToast ? 'show': '']">New image content added!</div>
     <div id="snackbar" :class="[showFailToast ? 'show': '']">{{errorMessage}}</div>
 
   </div>

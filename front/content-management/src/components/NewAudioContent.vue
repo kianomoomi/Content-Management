@@ -70,7 +70,7 @@
             submit
         </b-button>
     </div>
-    <div id="snackbar" :class="[showSuccessToast ? 'show': '']">New document content added!</div>
+    <div id="snackbar" :class="[showSuccessToast ? 'show': '']">New audio content added!</div>
     <div id="snackbar" :class="[showFailToast ? 'show': '']">{{errorMessage}}</div>
 
   </div>
