@@ -18,7 +18,8 @@ class Content(models.Model):
         choices=[
             ('V', 'Video'),
             ('A', 'Audio'),
-            ('D', 'Document')
+            ('D', 'Document'),
+            ('I', 'Image')
         ]
     )
     file = models.FileField(upload_to=content_directory_path)
