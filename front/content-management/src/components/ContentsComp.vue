@@ -123,7 +123,7 @@
         :loading="audioLoading"
         :extra="audioExtra"
         :file="audioFile"
-        :attach="audioAttach"
+        :attach="audioAttachFile"
         :id="audioId"
         />
         <new-video-content
@@ -136,7 +136,7 @@
         :loading="videoLoading"
         :extra="videoExtra"
         :file="videoFile"
-        :attach="videoAttach"
+        :attach="videoAttachFile"
         :id="videoId"
         />
       </div>
@@ -256,7 +256,9 @@ export default {
       this.getAllContents();
     },
     logout(){
+      console.log(localStorage.getItem('token'));
       localStorage.removeItem('token');
+      console.log(localStorage.getItem('token'));
       this.$router.push('/login');
     },
     getAllContents(){
