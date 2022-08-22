@@ -96,6 +96,35 @@
             </li>
           </ul>
         </li>
+        <li :class="[showImageMenu ? 'showMenu': '']">
+          <div class="icon-link">
+            <font-awesome-icon icon="fa-solid fa-angle-up" class="sidebar-icon-doc"/>
+            <a class="sidebar-item-icon-image">
+              <span>
+                <font-awesome-icon icon="fa-solid fa-image" class="sidebar-icon-doc"/>
+              </span>
+              <span class="link-name">Image</span>
+            </a>
+            <font-awesome-icon v-if="showImageMenu" icon="fa-solid fa-angle-up" class="arrow" @click="toggleImageSubMenu()"/>
+            <font-awesome-icon v-if="!showImageMenu" icon="fa-solid fa-angle-down" class="arrow" @click="toggleImageSubMenu()"/>
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link-name" href="#">Image</a></li>
+            <li v-for="content in imageContents" :key="content.id" >
+              <a @click="openSelectedImageContent(content.id)">{{content.title}}</a>
+            </li>
+            <li>
+              <a>
+              <span>
+                  <font-awesome-icon icon="fa-solid fa-plus" class="sidebar-icon-add"/>
+              </span>
+              <span class="add-text" @click="newImage()">
+                add new content
+              </span>
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
     <section class="home-section">
@@ -139,6 +168,19 @@
         :attach="videoAttachFile"
         :id="videoId"
         />
+        <new-image-content
+        v-if="showNewImagePage" 
+        @docAdded="refreshMenu()"
+        />
+        <image-content
+        v-if="showImageContent"
+        :title="imageTitle"
+        :loading="imageLoading"
+        :extra="imageExtra"
+        :file="imageFile"
+        :attach="imageAttachFile"
+        :id="imageId"
+        />
       </div>
     </section>
   </div>
@@ -156,6 +198,8 @@ import NewAudioContent from './NewAudioContent.vue';
 import AudioContent from './AudioContent.vue';
 import NewVideoContent from './NewVideoContent.vue';
 import VideoContent from './VideoContent.vue';
+import NewImageContent from './NewImageContent.vue';
+import ImageContent from './ImageContent.vue';
 
 export default {
   components: {
@@ -165,6 +209,8 @@ export default {
     AudioContent,
     NewVideoContent,
     VideoContent,
+    NewImageContent,
+    ImageContent,
   },
   created() {
     this.getAllContents();
@@ -174,6 +220,7 @@ export default {
       showDocMenu: false,
       showAudioMenu: false,
       showVideoMenu:false,
+      showImageMenu: false,
 
       contents : [],
       loading:false,
@@ -184,6 +231,8 @@ export default {
       showAudioContent: false,
       showNewVideoPage: false,
       showVideoContent: false,
+      showNewImagePage:false,
+      showImageContent:false,
 
       docLoading: false,
       docTitle: '',
@@ -205,6 +254,13 @@ export default {
       videoFile: '',
       videoAttachFile : '',
       videoId: '',
+
+      imageLoading: false,
+      imageTitle: '',
+      imageExtra: {},
+      imageFile: '',
+      imageAttachFile : '',
+      imageId: '',
     }
   },
   computed: {
@@ -217,6 +273,9 @@ export default {
     videoContents() {
       return this.contents.filter(item => item.file_format === 'V')
     },
+    imageContents() {
+      return this.contents.filter(item => item.file_format === 'I')
+    },
   },
   methods: {
     toggleDocSubMenu(){
@@ -228,6 +287,9 @@ export default {
     toggleVideoSubMenu(){
       this.showVideoMenu = ~this.showVideoMenu;
     },
+    toggleImageSubMenu(){
+      this.showImageMenu = ~this.showImageMenu;
+    },
     newDoc(){
       this.showNewDocPage = true;
       this.showDocContent = false;
@@ -235,6 +297,8 @@ export default {
       this.showAudioContent = false;
       this.showNewVideoPage = false;
       this.showVideoContent = false;
+      this.showImageContent = false;
+      this.showNewImagePage = false;
     },
     newAudio(){
       this.showNewAudioPage = true;
@@ -243,6 +307,8 @@ export default {
       this.showAudioContent = false;
       this.showNewVideoPage = false;
       this.showVideoContent = false;
+      this.showImageContent = false;
+      this.showNewImagePage = false;
     },
     newVideo() {
       this.showNewVideoPage = true;
@@ -251,6 +317,18 @@ export default {
       this.showDocContent = false;
       this.showAudioContent = false;
       this.showVideoContent = false;
+      this.showImageContent = false;
+      this.showNewImagePage = false;
+    },
+    newImage(){
+      this.showNewImagePage = true;
+      this.showNewVideoPage = false;
+      this.showNewAudioPage = false;
+      this.showNewDocPage = false;
+      this.showDocContent = false;
+      this.showAudioContent = false;
+      this.showVideoContent = false;
+      this.showImageContent = false;
     },
     refreshMenu(){
       this.getAllContents();
@@ -281,6 +359,8 @@ export default {
       this.showAudioContent = false;
       this.showVideoContent = false;
       this.showNewVideoPage = false;
+      this.showImageContent = false;
+      this.showNewImagePage = false;
 
       this.docLoading = true;
       let api = "http://127.0.0.1:8000/content/retrieve/"+id;
@@ -305,8 +385,10 @@ export default {
       this.showNewDocPage = false;
       this.showVideoContent = false;
       this.showNewVideoPage = false;
+      this.showImageContent = false;
+      this.showNewImagePage = false;
 
-      this.docLoading = true;
+      this.audioLoading = true;
       let api = "http://127.0.0.1:8000/content/retrieve/"+id;
       Vue.axios.get(api, {
         headers: {
@@ -329,8 +411,10 @@ export default {
       this.showDocContent = false;
       this.showNewDocPage = false;
       this.showNewVideoPage = false;
+      this.showImageContent = false;
+      this.showNewImagePage = false;
 
-      this.docLoading = true;
+      this.videoLoading = true;
       let api = "http://127.0.0.1:8000/content/retrieve/"+id;
       Vue.axios.get(api, {
         headers: {
@@ -344,6 +428,32 @@ export default {
         this.videoExtra = response.data.extra;
         this.videoId = response.data.id;
         this.videoLoading = false;
+      }) 
+    },
+    openSelectedImageContent(id) {
+      this.showImageContent = true;
+      this.showAudioContent = false;
+      this.showNewAudioPage = false;
+      this.showDocContent = false;
+      this.showNewDocPage = false;
+      this.showVideoContent = false;
+      this.showNewVideoPage = false;
+      this.showNewImagePage = false;
+
+      this.imageLoading = true;
+      let api = "http://127.0.0.1:8000/content/retrieve/"+id;
+      Vue.axios.get(api, {
+        headers: {
+          'Authorization': "Token " + localStorage.getItem('token')
+        }
+      })
+      .then(response => {
+        this.imageTitle = response.data.title;
+        this.imageFile = response.data.file;
+        this.imageAttachFile = response.data.attach_file;
+        this.imageExtra = response.data.extra;
+        this.imageId = response.data.id;
+        this.imageLoading = false;
       }) 
     },
     }
@@ -558,6 +668,11 @@ a:hover {
 }
 .sidebar-item-icon-video {
   margin-left: -150px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.sidebar-item-icon-image{
+    margin-left: -145px;
   margin-top: 10px;
   margin-bottom: 10px;
 }

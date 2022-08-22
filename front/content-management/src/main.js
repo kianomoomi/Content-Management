@@ -20,6 +20,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faMinus } from '@fortawesome/free-solid-svg-icons'
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faImage } from '@fortawesome/free-solid-svg-icons'
 
 
 Vue.config.productionTip = false
@@ -35,6 +36,7 @@ library.add(faVolumeHigh);
 library.add(faVideo);
 library.add(faPlus);
 library.add(faMinus);
+library.add(faImage);
 library.add(faArrowRightFromBracket);
 library.add(faArrowUpFromBracket);
 
