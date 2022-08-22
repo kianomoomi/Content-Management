@@ -51,8 +51,8 @@ export default {
             };
             Vue.axios.post(api, data)
             .then(response => {
-                this.$store.commit("setToken", response.data.token);
-                console.log(this.$store.state.token)
+                localStorage.removeItem('token');
+                localStorage.setItem('token', response.data.token)
                 this.loading = false;
                 this.$router.replace("/contents");
             }).catch((e) => {
