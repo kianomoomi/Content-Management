@@ -58,9 +58,9 @@ export default {
             }).catch((e) => {
                 let obj = e.response.data
                 this.errorMessage = obj[Object.keys(obj)[0]][0];
-                // if (this.errorMessage =="A user with that username already exists.") {
-                //   this.errorMessage = "Username already exists."
-                // }
+                if (this.errorMessage =="A user with that username already exists.") {
+                  this.errorMessage = "Username already exists."
+                }
                 this.loading = false;
                 console.log(this.errorMessage)
             })

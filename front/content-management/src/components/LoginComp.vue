@@ -43,7 +43,7 @@ export default {
     methods: {
         login(){
             this.loading = true;
-            let api = "http://127.0.0.1:8000/user/login/?username=nona&password=nonanona" 
+            let api = "http://127.0.0.1:8000/user/login/?username=" 
             + this.username 
             + "&password=" 
             + this.password
